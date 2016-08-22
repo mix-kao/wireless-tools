@@ -4,9 +4,9 @@ source ./func.inc
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
-if_num=$1
+if_num=$1 #how many interfaces you want to create?
 if_prefix=mv
-if_phy=wlp3s0
+if_phy=wlp3s0 #your physical wireless interface name
 wpa_supplicant_cmd="wpa_supplicant -B"
 rule_prefix=100
 
