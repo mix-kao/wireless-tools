@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source ./func.inc
+source ./include/func.inc
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
@@ -16,6 +16,8 @@ rule_prefix=100
 init_env() {
     killall wpa_supplicant
     killall dhclient
+    rmmod ath9k ath9k_common ath9k_hw ath mac80211 cfg80211
+    modprobe ath9k
     ip addr flush ${if_phy}
     ip link set dev ${if_phy} down up
 }
@@ -63,7 +65,7 @@ for((i=1;i<=if_num;i++)); do
     fi
 done
 
-#echo ${wpa_supplicant_cmd}
+echo ${wpa_supplicant_cmd}
 ${wpa_supplicant_cmd}
 
 chk_all_connect
@@ -91,6 +93,7 @@ for((i=0;i<=if_num;i++)); do
         #Doing ip route for each WiFi interface
         wip=$(get_ip_info ${if_prefix}${r_idx})
         wip=$(echo ${wip%/*})
+	ifconfig mv${r_idx} ${wip} netmask 255.255.0.0
         ip ru del pref ${r_idx}
         ip ru del pref ${r_idx}
         ip ru add from ${wip}/32 ta mv${r_idx} pref ${r_idx}
